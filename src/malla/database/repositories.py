@@ -174,6 +174,7 @@ class PacketRepository:
             return None
 
 
+    @staticmethod
     def get_packets(
         limit: int = 100,
         offset: int = 0,
