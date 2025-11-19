@@ -4,9 +4,8 @@
 {% block title %}Packet #{{ packet.id }} - Malla{% endblock %}
 
 {% block extra_css %}
-<!-- Leaflet CSS (vendored) -->
-<link rel="stylesheet" href="{{ url_for('static', filename='vendor/leaflet/leaflet.css') }}?v={{ STATIC_VERSION }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='css/traceroute-graph.css', v=STATIC_VERSION) }}">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     .card-metric {
         text-align: center;
@@ -871,10 +870,10 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Leaflet JS (vendored) -->
-<script src="{{ url_for('static', filename='vendor/leaflet/leaflet.js') }}?v={{ STATIC_VERSION }}"></script>
-<!-- D3.js for graph visualisation (vendored) -->
-<script src="{{ url_for('static', filename='vendor/d3/d3.v7.min.js') }}?v={{ STATIC_VERSION }}"></script>
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- D3.js for graph visualisation -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
 
 <script>
 // Embed data directly in JavaScript variables to avoid HTML attribute parsing issues
@@ -886,6 +885,12 @@ window.packetData = {{ {
 } | tojson }};
 
 // Initialize maps if data exists
+function enforceLeafletAttribution(mapInstance) {
+    if (mapInstance && mapInstance.attributionControl && typeof mapInstance.attributionControl.setPrefix === 'function') {
+        mapInstance.attributionControl.setPrefix('Leaflet');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize traceroute map if traceroute data exists
     const tracerouteMapContainer = document.getElementById('traceroute-map');
@@ -1071,6 +1076,8 @@ async function loadTracerouteMap(routeNodes) {
             routeLocations[0].longitude
         ], 10);
 
+        enforceLeafletAttribution(map);
+
         // Add tile layer
         // Add theme-appropriate tile layer
         const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
@@ -1192,6 +1199,8 @@ function loadReceptionMap(primaryGateway, otherReceptions, gatewayLocations) {
             gatewayMapData[0].latitude,
             gatewayMapData[0].longitude
         ], 10);
+
+        enforceLeafletAttribution(map);
 
         // Add tile layer
         // Add theme-appropriate tile layer

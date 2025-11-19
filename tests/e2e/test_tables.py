@@ -15,8 +15,8 @@ class TestTables:
         """Test that the packets page loads correctly."""
         page.goto(f"{test_server_url}/packets")
 
-        # Table container should be attached (content may render after JS init)
-        expect(page.locator("#packetsTable")).to_be_attached()
+        # Check that the table container exists
+        expect(page.locator("#packetsTable")).to_be_visible()
 
         # Check that the full-screen layout is present
         expect(page.locator(".table-container")).to_be_visible()

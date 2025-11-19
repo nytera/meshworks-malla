@@ -1,10 +1,9 @@
-# MeshWorks Malla — Meshtastic analysis & web UI
+# Malla (Meshworks fork)
 
-MeshWorks Malla (_“mesh”_ in Spanish) ingests Meshtastic MQTT packets into SQLite and provides a modern web UI to explore packets, nodes, chat, traceroutes and maps. It’s suitable for personal networks, community deployments and experimentation.
+Malla (_Mesh_, in Spanish) is an ([AI-built](./AI.md)) tool that logs Meshtastic packets from an MQTT broker into a SQLite database and exposes a web UI to explore and monitor the network.  
+This repository is Meshworks' maintained fork of [zenitraM/malla](https://github.com/zenitraM/malla) and powers the monitoring stack behind [meshworks.ru](https://meshworks.ru/).
 
-Public Docker images live at **ghcr.io/aminovpavel/meshworks-malla**.
-
-> Attribution: This project originated as a fork of [zenitraM/malla](https://github.com/zenitraM/malla). Many thanks to the upstream authors and community.
+Public Docker images are published to **ghcr.io/nytera/meshworks-malla**.
 
 ## Quick start
 
@@ -27,8 +26,8 @@ Pick whichever workflow fits you best:
   git clone https://git.meshworks.ru/MeshWorks/meshworks-malla.git
   cd meshworks-malla
   cp env.example .env                                  # fill in MQTT credentials
-  docker pull ghcr.io/aminovpavel/meshworks-malla:latest
-  export MALLA_IMAGE=ghcr.io/aminovpavel/meshworks-malla:latest
+  docker pull ghcr.io/nytera/meshworks-malla:latest
+  export MALLA_IMAGE=ghcr.io/nytera/meshworks-malla:latest
   docker compose up -d
   ```
   `malla-capture` and `malla-web` share the volume `malla_data`, so captured history persists across restarts.
@@ -37,15 +36,22 @@ Need demo data, screenshots, maintainer workflows or release notes on the image 
 
 ## Running instances
 
-Community instances may run different versions; feature parity is not guaranteed.
+Meshworks operates a public deployment backed by this fork:
+- https://malla.meshworks.ru/ (Russia / Moscow mesh)
 
-## Highlights
+Community-operated upstream instances such as https://malla.meshtastic.es/ may run different code; feature parity is not guaranteed.
 
-- Fast packet browser with filters (time, node, RSSI/SNR, type) and CSV export
-- Chat stream (TEXT_MESSAGE_APP) with sender/channel filters
-- Node explorer (hardware, role, battery) with search & badges
-- Traceroutes, map and network graph views
-- Tools: hop analysis, gateway compare, longest links, analytics
+## Meshworks-specific enhancements
+
+In addition to staying close to upstream, this fork ships Meshworks-focused improvements:
+
+- Hardened chat experience with filterable live stream, adaptive tooltips and extensive end-to-end tests.
+- Dark-mode aligned UI assets and Playwright-based screenshot tooling (`scripts/generate_screenshots.py`).
+- Deterministic demo database generator for docs/tests via `scripts/create_demo_database.py`.
+- Continuous integration coverage for Python 3.13 + Playwright, matching our production stack.
+- Infrastructure docs and GitOps alignment for the Meshworks Meshtastic deployment.
+
+Wherever possible we keep changes compatible so upstream updates remain easy to merge.
 
 ## Features
 
@@ -95,55 +101,9 @@ Community instances may run different versions; feature parity is not guaranteed
 
 ## Installation
 
-### Using Docker (public image)
-
-Public images are available on GHCR: `ghcr.io/aminovpavel/meshworks-malla` with tags like `latest` and `sha-<shortsha>` (commit-based).
-
-```bash
-docker pull ghcr.io/aminovpavel/meshworks-malla:latest
-# or pin a specific build
-docker pull ghcr.io/aminovpavel/meshworks-malla:sha-be66ef8
-
-# Run capture (MQTT -> SQLite)
-docker volume create malla_data
-docker run -d --name malla-capture \"
-  -e MALLA_MQTT_BROKER_ADDRESS=your.mqtt.broker.address \"
-  -e MALLA_MQTT_PORT=1883 \"
-  -e MALLA_MQTT_USERNAME=your_user \"
-  -e MALLA_MQTT_PASSWORD=your_pass \"
-  -e MALLA_DATABASE_FILE=/app/data/meshtastic_history.db \"
-  -v malla_data:/app/data \"
-  ghcr.io/aminovpavel/meshworks-malla:sha-be66ef8 \"
-  /app/.venv/bin/malla-capture
-
-# Run Web UI only (binds 5008)
-docker run -d --name malla-web \
-  -p 5008:5008 \
-  -e MALLA_DATABASE_FILE=/app/data/meshtastic_history.db \
-  -e MALLA_HOST=0.0.0.0 \
-  -e MALLA_PORT=5008 \
-  -v malla_data:/app/data \
-  ghcr.io/aminovpavel/meshworks-malla:sha-be66ef8 \
-  /app/.venv/bin/malla-web-gunicorn
-```
-
-To force-refresh browser caches for static assets, set `MALLA_STATIC_VERSION` (typically the short SHA of the image):
-
-```bash
-docker run -d --name malla-web \
-  -p 5008:5008 \
-  -e MALLA_DATABASE_FILE=/app/data/meshtastic_history.db \
-  -e MALLA_HOST=0.0.0.0 \
-  -e MALLA_PORT=5008 \
-  -e MALLA_STATIC_VERSION=be66ef8 \
-  -v malla_data:/app/data \
-  ghcr.io/aminovpavel/meshworks-malla:sha-be66ef8 \
-  /app/.venv/bin/malla-web
-```
-
 ### Using Docker (build locally)
 
-You can also build an image locally and point Docker Compose at the result.
+There is no public container image for this fork. Build it locally and point Docker Compose at the result.
 
 ```bash
 git clone https://git.meshworks.ru/MeshWorks/meshworks-malla.git
@@ -156,12 +116,6 @@ docker compose up -d
 docker compose logs -f                   # watch containers
 ```
 The compose file ships with a capture + web pair already wired to share `malla_data` volume.
-
-### Image tags
-
-- `latest` – moving tag following the default branch
-- `sha-<shortsha>` – immutable commit-based pins (recommended for production)
-- Semver `vX.Y.Z` (when releases are cut), plus `X.Y`
 
 **Manual Docker run (advanced):**
 ```bash
@@ -262,10 +216,11 @@ uv run malla-web
 **Access the web interface:**
 - Local: http://localhost:5008
 
-### Health & info endpoints
+### Environment variables
 
-- `GET /health` – returns `{ status, service, version }` (used by CI smoke tests)
-- `GET /info` – returns application metadata (name, version, components)
+All `config.yaml` settings can be overridden via `MALLA_*` variables. For example:
+
+- `MALLA_GA_MEASUREMENT_ID` — optional Google Analytics 4 measurement ID. Default (unset) means the analytics script is skipped entirely.
 
 ## Running Both Tools Together
 
@@ -286,22 +241,6 @@ uv run malla-web
 ```
 
 Both commands read the same SQLite database and cooperate safely thanks to the repository connection pool.
-
-## Static assets & favicon
-
-### Cache-busting
-
-Static URLs are versioned with a `?v=STATIC_VERSION` query param in templates. The value resolves to:
-
-- `MALLA_STATIC_VERSION` env var, if set (e.g., `be66ef8`).
-- Otherwise, the Python package version from `src/malla/__init__.py`.
-
-This lets you force-refresh client caches without modifying code by setting the env var in Docker/Compose.
-
-### Favicon
-
-- Place your icon at `src/malla/static/icons/favicon.ico`.
-- The app serves `/favicon.ico` directly. If `src/malla/static/icons/favicon.png` exists, it will be used as a fallback when ICO is missing.
 
 ## Further reading
 

@@ -26,9 +26,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Then, add the rest of the project source code and install it
 # Installing separately from its dependencies allows optimal layer caching
 COPY . /app
-# Vendor CDN assets to serve locally (best effort)
-RUN python3 scripts/vendor_assets.py || true
-# Install project deps after vendoring (keep cache mount for speed)
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 

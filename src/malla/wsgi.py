@@ -7,30 +7,16 @@ that starts Gunicorn with appropriate configuration for production deployment.
 """
 
 import logging
-import os
 import sys
 
 from .config import get_config
 from .web_ui import create_app
 
-# Configure logging: stdout + optional file in writable location
-_handlers: list[logging.Handler] = [logging.StreamHandler(sys.stdout)]
-_candidates: list[str] = []
-if os.getenv("MALLA_LOG_FILE"):
-    _candidates.append(os.getenv("MALLA_LOG_FILE", ""))
-_candidates.extend(["/data/app.log", "/tmp/app.log"])
-for p in _candidates:
-    try:
-        if p and os.path.isdir(os.path.dirname(p) or ".") and os.access(os.path.dirname(p) or ".", os.W_OK):
-            _handlers.append(logging.FileHandler(p))
-            break
-    except Exception:
-        pass
-
+# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=_handlers,
+    handlers=[logging.FileHandler("app.log"), logging.StreamHandler(sys.stdout)],
 )
 
 logger = logging.getLogger(__name__)

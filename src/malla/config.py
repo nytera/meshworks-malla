@@ -29,11 +29,16 @@ class AppConfig:
     database_file: str = "meshtastic_history.db"
     database_read_only: bool = True
     trust_proxy_headers: bool = False
-    allowed_hosts: str = ""  # comma-separated host allowlist for Host header validation
-    default_rate_limit: str = ""  # e.g., "200 per minute"; empty disables
+    allowed_hosts: str = ""
+    default_rate_limit: str = ""
     host: str = "0.0.0.0"
     port: int = 5008
     debug: bool = False
+
+    # Browser debug tooling (optional)
+    enable_browser_debug: bool = False
+    debug_token: str | None = None
+    debug_log_buffer_size: int = 500
 
     # MQTT capture settings
     mqtt_broker_address: str = "127.0.0.1"
@@ -49,10 +54,8 @@ class AppConfig:
     # Logging
     log_level: str = "INFO"
 
-    # Browser debug (dev-only; optional)
-    enable_browser_debug: bool = False
-    debug_token: str | None = None
-    debug_log_buffer_size: int = 500
+    # Analytics
+    ga_measurement_id: str | None = None
 
     # Internal attribute to remember the source file used
     _config_path: Path | None = field(default=None, repr=False, compare=False)
