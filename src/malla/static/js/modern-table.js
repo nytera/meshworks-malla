@@ -121,22 +121,14 @@ class ModernTable {
     }
 
     renderLoadingState() {
-        // Render a placeholder row with the same number of cells as columns,
-        // so tests using nth-child selectors still find cells while loading.
-        const cols = Math.max(1, this.options.columns.length);
-        const cells = [];
-        // First cell: spinner + label
-        cells.push(`
-            <td class="text-center py-4">
-                <div class="loading-spinner mx-auto"></div>
-                <div class="mt-2 text-muted">Loading...</div>
-            </td>
-        `);
-        // Remaining cells: simple placeholders
-        for (let i = 1; i < cols; i++) {
-            cells.push('<td class="text-muted">&nbsp;</td>');
-        }
-        return `<tr>${cells.join('')}</tr>`;
+        return `
+            <tr>
+                <td colspan="${this.options.columns.length}" class="text-center py-4">
+                    <div class="loading-spinner mx-auto"></div>
+                    <div class="mt-2 text-muted">Loading...</div>
+                </td>
+            </tr>
+        `;
     }
 
     renderEmptyState() {
@@ -257,9 +249,8 @@ class ModernTable {
             }
 
             const data = await response.json();
-            // Accept multiple response shapes for compatibility
-            this.state.data = data.data || data.packets || data.rows || [];
-            this.state.totalCount = (data.total_count ?? data.total ?? (Array.isArray(this.state.data) ? this.state.data.length : 0));
+            this.state.data = data.data || [];
+            this.state.totalCount = data.total_count || 0;
             this.state.totalPages = Math.ceil(this.state.totalCount / this.state.pageSize);
 
             // Track if this is a grouped query for pagination display
