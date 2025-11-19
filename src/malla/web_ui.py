@@ -16,9 +16,8 @@ from pathlib import Path
 from flask import Flask
 from markupsafe import Markup
 
-# Import application configuration loader
-from .config import AppConfig, get_config
 from . import __version__ as package_version
+from .config import AppConfig, get_config
 
 # Optional CORS support will be checked inline
 # Import configuration and database setup

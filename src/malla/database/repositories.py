@@ -4,9 +4,9 @@ Repository classes for database operations.
 This module provides data access layer with business logic for different entities.
 """
 
+import html
 import json
 import logging
-import html
 import re
 import time
 from datetime import UTC, datetime
