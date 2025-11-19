@@ -27,6 +27,15 @@ port: 5008
 # Enable Flask debug mode (do **not** use in production)
 debug: false
 
+# Additional security and debug options
+# database_read_only: true
+# trust_proxy_headers: false
+# allowed_hosts: ""
+# default_rate_limit: ""
+# enable_browser_debug: false
+# debug_token: ""
+# debug_log_buffer_size: 500
+
 # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 # log_level: "INFO"
 

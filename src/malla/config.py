@@ -27,9 +27,18 @@ class AppConfig:
     # Flask/server settings
     secret_key: str = "dev-secret-key-change-in-production"
     database_file: str = "meshtastic_history.db"
+    database_read_only: bool = True
+    trust_proxy_headers: bool = False
+    allowed_hosts: str = ""
+    default_rate_limit: str = ""
     host: str = "0.0.0.0"
     port: int = 5008
     debug: bool = False
+
+    # Browser debug tooling (optional)
+    enable_browser_debug: bool = False
+    debug_token: str | None = None
+    debug_log_buffer_size: int = 500
 
     # MQTT capture settings
     mqtt_broker_address: str = "127.0.0.1"
