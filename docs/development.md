@@ -95,8 +95,8 @@ git clone https://git.meshworks.ru/MeshWorks/meshworks-malla.git
 cd meshworks-malla
 cp env.example .env                      # provide MQTT credentials
 $EDITOR .env
-docker pull ghcr.io/aminovpavel/meshworks-malla:latest
-export MALLA_IMAGE=ghcr.io/aminovpavel/meshworks-malla:latest
+docker pull ghcr.io/nytera/meshworks-malla:latest
+export MALLA_IMAGE=ghcr.io/nytera/meshworks-malla:latest
 docker compose up -d
 docker compose logs -f
 ```

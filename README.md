@@ -3,7 +3,7 @@
 Malla (_Mesh_, in Spanish) is an ([AI-built](./AI.md)) tool that logs Meshtastic packets from an MQTT broker into a SQLite database and exposes a web UI to explore and monitor the network.  
 This repository is Meshworks' maintained fork of [zenitraM/malla](https://github.com/zenitraM/malla) and powers the monitoring stack behind [meshworks.ru](https://meshworks.ru/).
 
-Public Docker images are published to **ghcr.io/aminovpavel/meshworks-malla**.
+Public Docker images are published to **ghcr.io/nytera/meshworks-malla**.
 
 ## Quick start
 
@@ -26,8 +26,8 @@ Pick whichever workflow fits you best:
   git clone https://git.meshworks.ru/MeshWorks/meshworks-malla.git
   cd meshworks-malla
   cp env.example .env                                  # fill in MQTT credentials
-  docker pull ghcr.io/aminovpavel/meshworks-malla:latest
-  export MALLA_IMAGE=ghcr.io/aminovpavel/meshworks-malla:latest
+  docker pull ghcr.io/nytera/meshworks-malla:latest
+  export MALLA_IMAGE=ghcr.io/nytera/meshworks-malla:latest
   docker compose up -d
   ```
   `malla-capture` and `malla-web` share the volume `malla_data`, so captured history persists across restarts.
