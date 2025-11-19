@@ -434,6 +434,12 @@ let linkData = [];
 let firstDisplay = true; // prevent recenter after initial load
 let currentHopDepth = 1; // max hop depth to display around selected node
 
+function ensureLeafletAttribution(control) {
+    if (control && typeof control.setPrefix === 'function') {
+        control.setPrefix('Leaflet');
+    }
+}
+
 // Update map theme based on current theme setting
 function updateMapTheme() {
     if (!map || !lightTileLayer || !darkTileLayer) return;
@@ -650,6 +656,8 @@ let lightTileLayer, darkTileLayer, currentTileLayer;
 function initMap() {
     // Create map centered on a default location (will be updated when data loads)
     map = L.map('map').setView([40.0, -95.0], 4);
+
+    ensureLeafletAttribution(map.attributionControl);
 
     // Create light and dark tile layers
     lightTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {

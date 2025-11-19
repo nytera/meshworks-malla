@@ -885,6 +885,12 @@ window.packetData = {{ {
 } | tojson }};
 
 // Initialize maps if data exists
+function enforceLeafletAttribution(mapInstance) {
+    if (mapInstance && mapInstance.attributionControl && typeof mapInstance.attributionControl.setPrefix === 'function') {
+        mapInstance.attributionControl.setPrefix('Leaflet');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize traceroute map if traceroute data exists
     const tracerouteMapContainer = document.getElementById('traceroute-map');
@@ -1070,6 +1076,8 @@ async function loadTracerouteMap(routeNodes) {
             routeLocations[0].longitude
         ], 10);
 
+        enforceLeafletAttribution(map);
+
         // Add tile layer
         // Add theme-appropriate tile layer
         const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
@@ -1191,6 +1199,8 @@ function loadReceptionMap(primaryGateway, otherReceptions, gatewayLocations) {
             gatewayMapData[0].latitude,
             gatewayMapData[0].longitude
         ], 10);
+
+        enforceLeafletAttribution(map);
 
         // Add tile layer
         // Add theme-appropriate tile layer

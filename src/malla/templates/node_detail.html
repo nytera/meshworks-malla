@@ -736,6 +736,12 @@
 {% endif %}
 
 <script data-node-id="{{ node.node_id }}">
+function enforceLeafletAttribution(mapInstance) {
+    if (mapInstance && mapInstance.attributionControl && typeof mapInstance.attributionControl.setPrefix === 'function') {
+        mapInstance.attributionControl.setPrefix('Leaflet');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Set progress bar widths from data attributes
     document.querySelectorAll('.progress-bar[data-width]').forEach(function(bar) {
@@ -769,6 +775,8 @@ function loadCurrentLocationMap() {
         currentLocation.latitude,
         currentLocation.longitude
     ], 15);
+
+    enforceLeafletAttribution(currentMap);
 
     // Add OpenStreetMap tiles
     // Add theme-appropriate tile layer
@@ -833,6 +841,8 @@ async function loadLocationHistoryMap() {
             mostRecentLocation.latitude,
             mostRecentLocation.longitude
         ], 13);
+
+        enforceLeafletAttribution(map);
 
         // Add OpenStreetMap tiles
         // Add theme-appropriate tile layer
