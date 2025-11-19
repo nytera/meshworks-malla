@@ -45,6 +45,9 @@ class AppConfig:
     # Logging
     log_level: str = "INFO"
 
+    # Analytics
+    ga_measurement_id: str | None = None
+
     # Internal attribute to remember the source file used
     _config_path: Path | None = field(default=None, repr=False, compare=False)
 
