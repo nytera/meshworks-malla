@@ -216,6 +216,12 @@ uv run malla-web
 **Access the web interface:**
 - Local: http://localhost:5008
 
+### Environment variables
+
+All `config.yaml` settings can be overridden via `MALLA_*` variables. For example:
+
+- `MALLA_GA_MEASUREMENT_ID` — optional Google Analytics 4 measurement ID. Default (unset) means the analytics script is skipped entirely.
+
 ## Running Both Tools Together
 
 For a complete monitoring setup, run both tools simultaneously:

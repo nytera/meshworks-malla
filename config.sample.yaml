@@ -30,6 +30,9 @@ debug: false
 # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 # log_level: "INFO"
 
+# Google Analytics measurement ID (leave blank to disable analytics script)
+# ga_measurement_id: ""
+
 # ---------------------------------------------------------------------------
 # MQTT capture settings (used by malla-capture)
 # ---------------------------------------------------------------------------
